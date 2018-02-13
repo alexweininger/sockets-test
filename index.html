@@ -13,26 +13,31 @@
 </head>
 
 <body>
-    <canvas id="canvas" width="800" height="600"></canvas>
+    <div id="header">
+
+    </div>
+
+    <p>index.html main menu</p>
+    <p id="set-username">
+        <input name="username" id="username">
+        <input onclick="setUserName()" id="username-button" value="Set username" name="username-button" type="submit">
+    </p>
+
+    <p>
+        <input name="gameId" id="gameId">
+        <input type="submit" id="connectButton" value="Submit" class="submit" name="connectButton" onclick="joinGame()">
+    </p>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
     <script>
         var socket = io();
-        var canvas = document.getElementById('canvas');
-        var ctx = canvas.getContext('2d');
-
-        var x = 0;
-        var y = 0;
-        var xV = 0;
-        var yV = 0;
-
 
         document.addEventListener('keydown', (event) => {
             const keyName = event.key;
             socket.emit('key press', keyName);
         });
-
         socket.on('key press', function (key) {
             if (key === 'ArrowUp') {
                 moveUp();
@@ -40,37 +45,24 @@
             if (key === 'ArrowDown') {
                 moveDown();
             }
+
         });
 
-        function moveUp(){ 
-                y = y -2;
+        function setUserName() {
+            var username = document.getElementById('username').value;
+            socket.emit('set username', username);
+            $('set-username').hide();
         }
 
-        function moveDown(){ 
-                y = y + 2;
+        function joinGame() {
+            var gameId = document.getElementById('gameId').value;
+
+            socket.emit('join game', gameId);
         }
 
-        function drawBox() {
-            ctx.beginPath();
-            ctx.fillStyle = "black";
-            ctx.rect(x, y, 20, 50);
-            ctx.fillStyle = "black";
-            ctx.fill();
-            ctx.closePath();
-        }
-
-        function draw() {
-            ctx.clearRect(0, 0, 800, 600);
-
-
-
-            drawBox();
-
-            requestAnimationFrame(draw);
-        }
-        draw();
 
     </script>
+
 </body>
 
 </html>
