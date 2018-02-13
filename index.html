@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Socket.IO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="800" height="600"></canvas>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+        var socket = io();
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d');
+
+        var x = 0;
+        var y = 0;
+        var xV = 0;
+        var yV = 0;
+
+
+        document.addEventListener('keydown', (event) => {
+            const keyName = event.key;
+            socket.emit('key press', keyName);
+        });
+
+        socket.on('key press', function (key) {
+            if (key === 'ArrowUp') {
+                moveUp();
+            }
+            if (key === 'ArrowDown') {
+                moveDown();
+            }
+        });
+
+        function moveUp(){ 
+                y = y -2;
+        }
+
+        function moveDown(){ 
+                y = y + 2;
+        }
+
+        function drawBox() {
+            ctx.beginPath();
+            ctx.fillStyle = "black";
+            ctx.rect(x, y, 20, 50);
+            ctx.fillStyle = "black";
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, 800, 600);
+
+
+
+            drawBox();
+
+            requestAnimationFrame(draw);
+        }
+        draw();
+
+    </script>
+</body>
+
+</html>
