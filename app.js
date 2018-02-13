@@ -9,23 +9,17 @@ app.get('/', function (req, res) {
 
 io.on('connection', function (socket) {
     console.log('socket id: ' + socket.id + ' connected');
-    
+    socket.username = 'default';
     socket.on('set username', function(username) {
         socket.username = username;
         console.log('socket ' + socket.username);
     });
 
+    socket.on('join game', function (roomId) {
+        console.log('user requested to join game: ' + roomId);
 
-    socket.on('join game', function (id) {
-        console.log('user requested to join game: ' + id);
-
-       
-
-
-       
-
-        socket.join(id);
-        socket.in(id).emit('user joined', id);
+        socket.join(roomId);
+        socket.in(roomId).emit('user joined', id);
     });
 });
 
