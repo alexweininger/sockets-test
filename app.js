@@ -7,6 +7,9 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
+
+
+
 io.on('connection', function (socket) {
     console.log('socket id: ' + socket.id + ' connected');
     socket.username = 'default';
@@ -14,12 +17,19 @@ io.on('connection', function (socket) {
         socket.username = username;
         console.log('socket ' + socket.username);
     });
-
+    
+  
     socket.on('join game', function (roomId) {
-        console.log('user requested to join game: ' + roomId);
+        console.log(socket.username + ' requested to join game: ' + roomId);
 
         socket.join(roomId);
-        socket.in(roomId).emit('user joined', id);
+        socket.in(roomId).emit(socket.username + ' joined', roomId);
+   
+        var clients = io.sockets.clients('room'); // all users from room `room`
+       console.log('players in room: ');
+       for(var i = 0; i <= clients.length; i++){
+           console.log(clients[i].username);
+       }
     });
 });
 
